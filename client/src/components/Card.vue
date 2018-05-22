@@ -1,60 +1,44 @@
 <template>
   <div class="container">
-      {{ carts }}
-    <div v-for="(card, index) in cards" v-bind:key="index">
+    <!-- {{ items }} -->
+    <div v-for="(card, index) in items" v-bind:key="index">
         <figure class="snip1423" >
-            <img src="https://storage.googleapis.com/happygram/1526690117178gundamsdrx78.JPG" alt="sample57" />
+            <img v-bind:src="card.url" />
             <figcaption>
-                <h3>{{ card.name }} - {{ card.stock }} </h3>
+                <h3>{{ card.name }} </h3>
                 <p> {{ card.description }}.</p>
                 <div class="price">
-                    <s>Rp.{{ card.price }} </s>Rp.{{ card.price }} 
+                   Price: Rp.{{ card.price }} 
+                </div>
+                <div class="stock">
+                   Stock: {{ card.stock }} 
                 </div>
             </figcaption>
-            <a href="#" v-on:click="addItem(card)">
+            <!-- <a href="#" v-on:click="addItem(card)">
                 <i class="ion-android-cart"></i>
-            </a>
+            </a> -->
         </figure>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+import {mapState} from 'vuex'
 
 export default {
-    name: "Card",
-    data () {
-        return {
-            cards: null,
-            carts: []
-        }
+    name: 'Card',
+    computed: {
+      ...mapState([
+        'items'
+      ])
+      // items () {
+      //   return this.$store.state.items
+      // }
     },
     methods: {
-        getItem: function () {
-            let url = 'http://localhost:3000/items/list'
-
-            axios
-              .get(url)
-              .then(response => {
-                  this.cards = response.data.data
-                //   console.log('card dari response',kartu)
-                //   this.cards.push(kartu)
-                //   console.log('ini card yang dipush',this.card)
-
-              })
-              .catch(error => {
-                  console.log(error)
-              })
-        },
-        addItem: function (card) {
-            console.log(card)
-            this.carts.push(card)
-
-        }        
     },
-    mounted () {
-        this.getItem()
+    created: function () {
+      this.$store.dispatch('getItems')
     }
 }
 </script>
